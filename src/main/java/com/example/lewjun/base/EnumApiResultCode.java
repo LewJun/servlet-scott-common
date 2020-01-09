@@ -3,6 +3,8 @@ package com.example.lewjun.base;
 /** @author huiye 请求状态码 */
 public enum EnumApiResultCode {
   /** 成功状态码 */
+  FAILED(-1, "失败"),
+  /** 成功状态码 */
   SUCCESS(0, "成功"),
   /* 参数错误 1001-1999 */
   PARAM_IS_INVALID(1001, "参数无效"),
@@ -26,5 +28,10 @@ public enum EnumApiResultCode {
 
   public String getMsg() {
     return msg;
+  }
+
+  @Override
+  public String toString() {
+    return "{\"code\": " + getCode() + ", \"msg\":\"" + getMsg() + "\"}";
   }
 }
