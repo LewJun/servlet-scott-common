@@ -20,30 +20,36 @@ public class ServletUtils {
   private static final String VIEW_PATH = "/WEB-INF/jsp/";
   private static final String VIEW_SUFFIX = ".jsp";
 
-  public static void success(HttpServletResponse resp) throws IOException {
-    toJson(resp, ApiResult.success());
+  public static void success() throws IOException {
+    toJson(ApiResult.success());
   }
 
-  public static void success(HttpServletResponse resp, Object data) throws IOException {
-    toJson(resp, ApiResult.success(data));
+  public static void success(Object data) throws IOException {
+    toJson(ApiResult.success(data));
   }
 
-  public static void failure(HttpServletResponse resp, EnumApiResultCode apiResultCode)
-      throws IOException {
-    toJson(resp, ApiResult.failure(apiResultCode));
+  public static void failure() throws IOException {
+    toJson(ApiResult.failure(EnumApiResultCode.FAILED));
   }
 
-  private static void toJson(HttpServletResponse resp, ApiResult apiResult) throws IOException {
+  public static void failure(EnumApiResultCode apiResultCode) throws IOException {
+    toJson(ApiResult.failure(apiResultCode));
+  }
+
+  private static void toJson(ApiResult apiResult) throws IOException {
     String ret = GsonUtils.getGson(false, DateFormatUtils.ISO_DATE_FORMAT).toJson(apiResult);
     LOGGER.info("{}", ret);
+    HttpServletResponse resp = (HttpServletResponse) WebUtils.getResp();
+    resp.setStatus(200);
     resp.setContentType("application/json;charset=utf-8");
     PrintWriter writer = resp.getWriter();
     writer.println(ret);
     writer.flush();
   }
 
-  public static void forward(ServletRequest req, ServletResponse resp, String path)
-      throws ServletException, IOException {
+  public static void forward(String path) throws ServletException, IOException {
+    ServletRequest req = WebUtils.getReq();
+    ServletResponse resp = WebUtils.getResp();
     req.getRequestDispatcher(buildPath(path)).forward(req, resp);
   }
 
